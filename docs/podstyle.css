@@ -46,6 +46,14 @@
     background-color: #fff;
   }
 
+  .pod pre     {
+      background: #eeeeee;
+      border: 1px solid #888888;
+      color: black;
+      padding: 1em;
+      white-space: pre;
+  }
+  
   body.pod h1, body.pod h2, body.pod h3, body.pod h4  {
     font-family: Tahoma, Verdana, Helvetica, Arial, sans-serif;
     font-weight: normal;

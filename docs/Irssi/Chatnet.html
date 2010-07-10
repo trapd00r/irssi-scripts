@@ -1,4 +1,4 @@
-<html><head><title>Irssi::Query</title>
+<html><head><title>Irssi::Chatnet</title>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" >
 <link rel="stylesheet" title="podstyle" type="text/css" href="../podstyle.css" media="all" >
 
@@ -33,29 +33,27 @@
 name="NAME"
 >NAME</a></h1>
 
-<p>Irssi::Query</p>
+<p>Irssi::Chatnet</p>
 
 <h1><a class='u' href='#___top' title='click to go to top of document'
 name="FIELDS"
 >FIELDS</a></h1>
 
-<p>Query-&#62;{} type - &#34;QUERY&#34; text chat_type - String ID of chat protocol,
+<p>Chatnet-&#62;{} type - &#34;CHATNET&#34; text chat_type - String ID of chat protocol,
 for example &#34;IRC&#34;</p>
 
-<pre>  (..contains all the same data as Windowitem above..)
+<pre>  name - name of chat network
 
-  address - Host address of the queries nick
-  server_tag - Server tag used for this nick (doesn&#39;t get erased if
-               server gets disconnected)
-  unwanted - 1 if the other side closed or some error occured (DCC chats)</pre>
+  nick - if not empty, nick preferred in this network
+  username - if not empty, username preferred in this network
+  realname - if not empty, realname preferred in this network
+
+  own_host - address to use when connecting this network
+  autosendcmd - command to send after connecting to this network</pre>
 
 <h1><a class='u' href='#___top' title='click to go to top of document'
 name="METHODS"
 >METHODS</a></h1>
-
-<p>Query::destroy() Destroy the query.</p>
-
-<p>Query::query_change_server(server) Change the active server of the query.</p>
 <p class="backlinkbottom"><b><a name="___bottom" href="../index.html" title="All Documents">&lt;&lt;</a></b></p>
 
 <!-- end doc -->

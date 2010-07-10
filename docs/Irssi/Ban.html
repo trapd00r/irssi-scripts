@@ -1,4 +1,4 @@
-<html><head><title>Irssi::Query</title>
+<html><head><title>Irssi::Ban</title>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" >
 <link rel="stylesheet" title="podstyle" type="text/css" href="../podstyle.css" media="all" >
 
@@ -33,29 +33,17 @@
 name="NAME"
 >NAME</a></h1>
 
-<p>Irssi::Query</p>
+<p>Irssi::Ban</p>
 
 <h1><a class='u' href='#___top' title='click to go to top of document'
 name="FIELDS"
 >FIELDS</a></h1>
 
-<p>Query-&#62;{} type - &#34;QUERY&#34; text chat_type - String ID of chat protocol,
-for example &#34;IRC&#34;</p>
-
-<pre>  (..contains all the same data as Windowitem above..)
-
-  address - Host address of the queries nick
-  server_tag - Server tag used for this nick (doesn&#39;t get erased if
-               server gets disconnected)
-  unwanted - 1 if the other side closed or some error occured (DCC chats)</pre>
+<p>Ban-&#62;{} ban - The ban setby - Nick of who set the ban time - Timestamp when ban was set</p>
 
 <h1><a class='u' href='#___top' title='click to go to top of document'
 name="METHODS"
 >METHODS</a></h1>
-
-<p>Query::destroy() Destroy the query.</p>
-
-<p>Query::query_change_server(server) Change the active server of the query.</p>
 <p class="backlinkbottom"><b><a name="___bottom" href="../index.html" title="All Documents">&lt;&lt;</a></b></p>
 
 <!-- end doc -->

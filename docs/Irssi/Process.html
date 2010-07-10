@@ -39,23 +39,19 @@ name="NAME"
 name="FIELDS"
 >FIELDS</a></h1>
 
-<p>Query-&#62;{} type - &#34;QUERY&#34; text chat_type - String ID of chat protocol,
-for example &#34;IRC&#34;</p>
+<p>Process-&#62;{} id - ID for the process name - Name for the process (if given) args - The command that is being executed</p>
 
-<pre>  (..contains all the same data as Windowitem above..)
+<pre>  pid - PID for the executed command
+  target - send text with /msg &#60;target&#62; ...
+  target_win - print text to this window
 
-  address - Host address of the queries nick
-  server_tag - Server tag used for this nick (doesn&#39;t get erased if
-               server gets disconnected)
-  unwanted - 1 if the other side closed or some error occured (DCC chats)</pre>
+  shell - start the program via /bin/sh
+  notice - send text with /notice, not /msg if target is set
+  silent - don&#39;t print &#34;process exited with level xx&#34;</pre>
 
 <h1><a class='u' href='#___top' title='click to go to top of document'
 name="METHODS"
 >METHODS</a></h1>
-
-<p>Query::destroy() Destroy the query.</p>
-
-<p>Query::query_change_server(server) Change the active server of the query.</p>
 <p class="backlinkbottom"><b><a name="___bottom" href="../index.html" title="All Documents">&lt;&lt;</a></b></p>
 
 <!-- end doc -->

@@ -1,4 +1,4 @@
-<html><head><title>Irssi::Query</title>
+<html><head><title>Irssi::Client</title>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" >
 <link rel="stylesheet" title="podstyle" type="text/css" href="../podstyle.css" media="all" >
 
@@ -24,7 +24,6 @@
 <div class='indexgroup'>
 <ul   class='indexList indexList1'>
   <li class='indexItem indexItem1'><a href='#NAME'>NAME</a>
-  <li class='indexItem indexItem1'><a href='#FIELDS'>FIELDS</a>
   <li class='indexItem indexItem1'><a href='#METHODS'>METHODS</a>
 </ul>
 </div>
@@ -33,29 +32,15 @@
 name="NAME"
 >NAME</a></h1>
 
-<p>Irssi::Query</p>
+<p>Irssi::Client</p>
 
 <h1><a class='u' href='#___top' title='click to go to top of document'
-name="FIELDS"
->FIELDS</a></h1>
 
-<p>Query-&#62;{} type - &#34;QUERY&#34; text chat_type - String ID of chat protocol,
-for example &#34;IRC&#34;</p>
-
-<pre>  (..contains all the same data as Windowitem above..)
-
-  address - Host address of the queries nick
-  server_tag - Server tag used for this nick (doesn&#39;t get erased if
-               server gets disconnected)
-  unwanted - 1 if the other side closed or some error occured (DCC chats)</pre>
+>FIELDS Client-&#62;{} nick - nick of the client host - host of the client proxy_address - address of the proxy server server - Irc::Server for which we proxy to this client pass_sent - whether the client already send a PASS command user_sent - whether the client already send a USER command connected - whether the client is connected and ready want_ctcp - whether the client wants to receive CTCPs ircnet - network tag of the network we proxy</a></h1>
 
 <h1><a class='u' href='#___top' title='click to go to top of document'
 name="METHODS"
 >METHODS</a></h1>
-
-<p>Query::destroy() Destroy the query.</p>
-
-<p>Query::query_change_server(server) Change the active server of the query.</p>
 <p class="backlinkbottom"><b><a name="___bottom" href="../index.html" title="All Documents">&lt;&lt;</a></b></p>
 
 <!-- end doc -->
