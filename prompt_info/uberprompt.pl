@@ -25,9 +25,6 @@
 #                 be replaced by the original prompt content.
 #                 A parameter corresponding to the UP_* constants listed below
 #                 is required, in the format `/prompt set -inner Hello!'
-#
-# /prompt set [-inner|-pre|-post|only] <msg>
-#
 # /prompt clear - clears the additional data provided to the prompt.
 # /prompt on    - enables the uberprompt (things may get confused if this is used
 #                 whilst the prompt is already enabled)
@@ -42,9 +39,7 @@
 #
 # /set uberprompt_format <format>
 #
-# The default is [$*$uber], which is the same as the default provided in
-# default.theme. $uber is a placeholder variable to contain your additions
-# to the prompt when using the -inner mode.
+# The default is [$*], which is the same as the default provided in default.theme.
 # Changing this setting will update the prompt immediately, unlike editing your theme.
 #
 # An additional variable available within this format is '$uber', which expands to
@@ -82,56 +77,6 @@
 # signal or manual commands via:
 #
 # signal_add 'prompt changed', sub { my ($text, $len) = @_; ... do something ... };
-#
-#
-# NOTES FOR SCRIPT WRITERS:
-#
-# The following code snippet can be used within your own script as a preamble
-# to ensure that uberprompt is loaded before your script to avoid
-# any issues with load order.  It first checks if uberprompt is loaded, and
-# if not, attempts to load it.  If the load fails, the script will die
-# with an error message, otherwise it will call your app_init() function.
-#
-# ---- start of snippet ----
-
-# my $DEBUG_ENABLED = 0;
-# sub DEBUG () { $DEBUG_ENABLED }
-#
-# # check we have uberprompt loaded.
-#
-# sub script_is_loaded {
-#    return exists($Irssi::Script::{$_[0] . '::'});
-# }
-#
-# if (not script_is_loaded('uberprompt')) {
-#
-#     print "This script requires 'uberprompt.pl' in order to work. "
-#       . "Attempting to load it now...";
-#
-#     Irssi::signal_add('script error', 'load_uberprompt_failed');
-#     Irssi::command("script load uberprompt.pl");
-#
-#     unless(script_is_loaded('uberprompt')) {
-#         load_uberprompt_failed("File does not exist");
-#     }
-#     app_init();
-# } else {
-#     app_init();
-# }
-#
-# sub load_uberprompt_failed {
-#     Irssi::signal_remove('script error', 'load_prompt_failed');
-#
-#     print "Script could not be loaded. Script cannot continue. "
-#       . "Check you have uberprompt.pl installed in your path and "
-#         .  "try again.";
-#
-#     die "Script Load Failed: " . join(" ", @_);
-# }
-#
-# ---- end of snippet ----
-#
-#
 #
 # Bugs:
 #
@@ -173,7 +118,7 @@ use strict;
 use warnings;
 
 use Irssi;
-use Irssi::TextUI;
+use Irssi::TextUI;              # for sbar_items_redraw
 use Data::Dumper;
 
 { package Irssi::Nick }
@@ -253,11 +198,11 @@ sub _print_help {
            "              or a script",
            "/PROMPT SET   changes the contents of the prompt, according to the mode",
            "              and content provided.",
-           "      { -inner sets the value of the \$uber psuedo-variable in the",
+           "      -inner sets the value of the \$uber psuedo-variable in the",
            "             /set uberprompt_format setting.",
-           "      | -pre places the content before the current prompt string",
-           "      | -post places the content after the prompt string",
-           "      | -only replaces the entire prompt contents with the given string }",
+           "      -pre places the content before the current prompt string",
+           "      -post places the content after the prompt string",
+           "      -only replaces the entire prompt contents with the given string",
            "",
            "See Also:",
            '',
@@ -283,9 +228,7 @@ sub exp_lbrace() { '{' }
 sub exp_rbrace() { '}' }
 
 sub deinit {
-    Irssi::expando_destroy('lbrace');
-    Irssi::expando_destroy('rbrace');
-
+    Irssi::expando_destroy('brace');
     # remove uberprompt and return the original ones.
     print "Removing uberprompt and restoring original";
     restore_prompt_items();
@@ -298,7 +241,7 @@ sub init {
     Irssi::expando_create('lbrace', \&exp_lbrace, {});
     Irssi::expando_create('rbrace', \&exp_rbrace, {});
 
-    Irssi::settings_add_str ('uberprompt', 'uberprompt_format', '[$*$uber] ');
+    Irssi::settings_add_str('uberprompt', 'uberprompt_format', '[$*$uber] ');
     Irssi::settings_add_bool('uberprompt', 'uberprompt_debug', 0);
     Irssi::settings_add_bool('uberprompt', 'uberprompt_autostart', 1);
     Irssi::settings_add_bool('uberprompt', 'uberprompt_use_replaces', 0);
@@ -406,7 +349,8 @@ sub length_request_handler {
 
 sub reload_settings {
 
-    $use_replaces  = Irssi::settings_get_bool('uberprompt_use_replaces');
+    $use_replaces = Irssi::settings_get_bool('uberprompt_use_replaces');
+
     $DEBUG_ENABLED = Irssi::settings_get_bool('uberprompt_debug');
 
     if (DEBUG) {
@@ -414,6 +358,7 @@ sub reload_settings {
     } else {
         Irssi::signal_remove 'prompt changed', 'debug_prompt_changed';
     }
+
 
     my $new = Irssi::settings_get_str('uberprompt_format');
 
@@ -470,8 +415,8 @@ sub _escape_prompt_special {
     $str =~ s/\$/\$\$/g;
     $str =~ s/\\/\\\\/g;
     #$str =~ s/%/%%/g;
-    $str =~ s/{/\${lbrace}/g;
-    $str =~ s/}/\${rbrace}/g;
+    $str =~ s/{/\$lbrace/g;
+    $str =~ s/}/\$rbrace/g;
 
     return $str;
 }
@@ -489,7 +434,7 @@ sub uberprompt_render_prompt {
     }
 
     my $prompt = '';            # rendered content of the prompt.
-    my $theme  = Irssi::current_theme;
+    my $theme = Irssi::current_theme;
 
     my $arg = $use_replaces ? 0 : Irssi::EXPAND_FLAG_IGNORE_REPLACES;
     $prompt = $theme->format_expand("{uberprompt $prompt_arg}", $arg);
@@ -525,7 +470,7 @@ sub uberprompt_render_prompt {
         }
     }
 
-    _debug_print("rendering with: $prompt");
+    #_debug_print("Redrawing with: $prompt, size-only: $get_size_only");
 
 
     if (($prompt ne $prompt_last) or $emit_request) {
@@ -546,7 +491,7 @@ sub uberprompt_draw {
     my $prompt = uberprompt_render_prompt();
 
     my $ret = $sb_item->default_handler($get_size_only, $prompt, '', 0);
-    _debug_print("redrawing with: $prompt");
+
     return $ret;
 }
 
