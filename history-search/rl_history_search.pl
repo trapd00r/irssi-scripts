@@ -143,7 +143,7 @@ sub history_exit {
 }
 
 sub update_history_prompt {
-    my $col = scalar(@search_matches) ? '%g' : '%r';
+    my $col = scalar(@search_matches) ? '%b' : '%C';
     Irssi::signal_emit('change prompt',
                        ' reverse-i-search: `' . $col . $search_str
                        . '%n' . "'",
